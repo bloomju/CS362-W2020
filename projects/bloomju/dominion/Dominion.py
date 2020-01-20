@@ -281,7 +281,7 @@ class Militia(Action_card):
         Action_card.__init__(self,"Militia",4,0,0,0,2)
     def play(self,this_player,players,supply,trash):
         for player in players:
-            if (not player==this_player) and len(player.hand)>3:
+            if (not player==this_player) and len(player.hand)>0: #used to be 3, changed to introduce bug
                 for c in player.hand:
                     if c.react(player):
                         break
@@ -693,7 +693,7 @@ def gameover(supply):
     for stack in supply:
         if len(supply[stack])==0:
             out+=1
-    if out>=3:
+    if out>=5: #used to be 3, changed to introduce bug
         return True
     return False
 

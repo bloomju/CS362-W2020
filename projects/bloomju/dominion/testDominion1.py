@@ -11,52 +11,31 @@ import random
 from collections import defaultdict
 
 # Get player names
-player_names = ["Annie", "*Ben", "*Carla"]
+player_names = ["Annie", "*Ben", "*Carla", "*Daniel", "*Ethan", "*Felicity"]
 
 # number of curses and victory cards
 if len(player_names) > 2:
-    nV = 12
+    nV = 24
 else:
     nV = 8
 nC = -10 + 10 * len(player_names)
 
+
+boxSize = 10 * (len(player_names) // 3)  #number of copies of each card from box
+
 # Define box
-box = testUtility.getBoxes(nV)
+box = testUtility.getBoxes(nV, boxSize)
 
-supply_order = {0: ['Curse', 'Copper'], 2: ['Estate', 'Cellar', 'Chapel', 'Moat'],
-                3: ['Silver', 'Chancellor', 'Village', 'Woodcutter', 'Workshop'],
-                4: ['Gardens', 'Bureaucrat', 'Feast', 'Militia', 'Moneylender', 'Remodel', 'Smithy', 'Spy', 'Thief',
-                    'Throne Room'],
-                5: ['Duchy', 'Market', 'Council Room', 'Festival', 'Laboratory', 'Library', 'Mine', 'Witch'],
-                6: ['Gold', 'Adventurer'], 8: ['Province']}
+supply_order = testUtility.getSupplyOrder()
 
-# Pick 10 cards from box to be in the supply.
-boxlist = [k for k in box]
-random.shuffle(boxlist)
-random10 = boxlist[:10]
-supply = defaultdict(list, [(k, box[k]) for k in random10])
-
-# The supply always has these cards
-supply["Copper"] = [Dominion.Copper()] * (60 - len(player_names) * 7)
-supply["Silver"] = [Dominion.Silver()] * 40
-supply["Gold"] = [Dominion.Gold()] * 30
-supply["Estate"] = [Dominion.Estate()] * nV
-supply["Duchy"] = [Dominion.Duchy()] * nV
-supply["Province"] = [Dominion.Province()] * nV
-supply["Curse"] = [Dominion.Curse()] * nC
+# picks 10 cards from box to be used, and adds essential cards to supply
+supply = testUtility.getSupply(nV, nC, box, player_names)
 
 # initialize the trash
 trash = []
 
-# Costruct the Player objects
-players = []
-for name in player_names:
-    if name[0] == "*":
-        players.append(Dominion.ComputerPlayer(name[1:]))
-    elif name[0] == "^":
-        players.append(Dominion.TablePlayer(name[1:]))
-    else:
-        players.append(Dominion.Player(name))
+# Construct the Player objects
+players = testUtility.getPlayers(player_names)
 
 # Play the game
 turn = 0
